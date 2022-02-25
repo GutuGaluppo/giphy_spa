@@ -1,67 +1,87 @@
 import { useState } from 'react';
+import { GiphyFetch } from '@giphy/js-fetch-api'
 import Modal from './components/Modal';
+import { useAsync } from 'react-async-hook';
+import Header from './components/Header';
+import GifComponent from './components/GifComponent';
+import Footer from './components/Footer';
 
-const GIPHY_API = 'https://api.giphy.com/v1/gifs/search?api_key=tVaJe9QRTL6VZp9xhBkogbNWFTI9hYnJ&limit=20&offset=0&q='
+
+const giphyfSearch = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY)
+const gf = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY)
 
 function App() {
+
+	// States
 	const [search, setSearch] = useState('');
 	const [gifs, setGifs] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [openModal, setOpenModal] = useState(false);
-
+	const [gifModal, setGifModal] = useState(null);
 	const [selectedGif, setSelectedGif] = useState({});
 
-	const gifSearch = () => {
+
+
+	useAsync(async (offset) => {
+		const { data } = await gf.trending({ offset })
+		setGifs(data)
+	}, [])
+
+	const gifSearch = async (event, offset) => {
+		event.preventDefault();
 		if (search.length > 0) {
 			setIsLoading(true)
-			fetch(GIPHY_API + search)
-				.then((res) => {
-					setIsLoading(false)
-					return res.json()
-				})
-				.then((result) => {
-					console.log("result", result.data)
-					setGifs(result.data)
-				})
-				.catch((err) => { console.error(err) })
+			const { data } = await giphyfSearch.search(search, { offset, sort: 'relevant', limit: 30, type: 'stickers' })
+			setGifs(data)
+			setIsLoading(false)
+		}
+	}
+
+	const handleClick = (key) => {
+		const enterKey = key.keyCode === 13;
+		if (enterKey) {
+			gifSearch()
 		}
 	}
 
 	const handleSelectedGif = (index) => {
-		setOpenModal(true)
-
+		setGifModal(true)
 		if (gifs.includes(index)) {
 			setSelectedGif(gifs.filter((i) => i !== index))
 		} else {
 			setSelectedGif([...gifs, index])
 		}
-
 		setSelectedGif(index)
 	}
 
+	const handleCloseModal = () => {
+		setGifModal(null)
+	}
+
 	return (
-		<div className="text-center">
-			<header className="bg-cyan-800/50 p-14 text-center">
-				<input type="search" value={search} onChange={(e) => setSearch(e.target.value)} className="m-2 p-3 rounded-md" />
-				<button onClick={gifSearch}>Search</button>
-			</header>
+		<div className="text-center bg-slate-900">
+			<Header
+				search={search}
+				setSearch={setSearch}
+				handleClick={handleClick}
+				gifSearch={gifSearch}
+			/>
 
-			<div className="mx-auto w-[80%] flex flex-wrap jusify-center items-center">
+			<div className="mx-auto my-12 w-[80%]">
 				{isLoading && <div>Loading...</div>}
-
-				{gifs?.map((gif, index) => {
-					return (
-						<img src={gif.images.fixed_height_still.url} alt="" key={index} className="m-2 rounded-md" onClick={() => handleSelectedGif(gif)} />
-					)
-				})}
-
 				{
-					openModal ? (
-						<Modal setOpenModal={setOpenModal} selectedGif={selectedGif?.images?.downsized_large.url} />
-					) : null
+					gifs?.map((gif, index) => <GifComponent key={index} gif={gif} handleSelectedGif={handleSelectedGif} />)
 				}
 
+				{
+					gifModal ? (
+						<Modal
+							handleCloseModal={handleCloseModal}
+							selectedGif={selectedGif?.images?.downsized_large.url}
+						/>
+					) : null
+				}
 			</div>
+			<Footer />
 		</div>
 	);
 }
