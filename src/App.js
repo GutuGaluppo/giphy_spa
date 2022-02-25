@@ -7,8 +7,7 @@ import GifComponent from './components/GifComponent';
 import Footer from './components/Footer';
 
 
-const giphyfSearch = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY)
-const gf = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY)
+const giphyFetch = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY)
 
 function App() {
 
@@ -22,7 +21,7 @@ function App() {
 
 
 	useAsync(async (offset) => {
-		const { data } = await gf.trending({ offset })
+		const { data } = await giphyFetch.trending({ offset })
 		setGifs(data)
 	}, [])
 
@@ -30,7 +29,7 @@ function App() {
 		event.preventDefault();
 		if (search.length > 0) {
 			setIsLoading(true)
-			const { data } = await giphyfSearch.search(search, { offset, sort: 'relevant', limit: 30, type: 'stickers' })
+			const { data } = await giphyFetch.search(search, { offset, sort: 'relevant', limit: 30, type: 'stickers' })
 			setGifs(data)
 			setIsLoading(false)
 		}
