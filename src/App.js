@@ -66,7 +66,7 @@ function App() {
 			/>
 
 			<div className="mx-auto my-12 w-[80%]">
-				{isLoading && <div>Loading...</div>}
+				{isLoading && <div><h1 className="text-white font-light">Loading...</h1></div>}
 				{
 					gifs?.map((gif, index) => <GifComponent key={index} gif={gif} handleSelectedGif={handleSelectedGif} />)
 				}
