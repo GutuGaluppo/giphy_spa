@@ -57,7 +57,7 @@ function App() {
 	}
 
 	return (
-		<div className="text-center bg-slate-900 relative h-screen">
+		<div className="text-center bg-slate-900 relative">
 			<Header
 				search={search}
 				setSearch={setSearch}
@@ -67,9 +67,11 @@ function App() {
 
 			<div className="mx-auto my-12 w-[80%]">
 				{isLoading && <div><h1 className="text-white font-light">Loading...</h1></div>}
-				{/* {
+				<div>
+				{
 					gifs?.map((gif, index) => <GifComponent key={index} gif={gif} handleSelectedGif={handleSelectedGif} />)
-				} */}
+				}
+				</div>
 
 				{
 					gifModal ? (
