@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer() {
 	return (
-		<div className="flex flex-col items-center justify-center p-14 border-t border-white">
+		<footer className="flex flex-col items-center justify-center p-14 border-t border-white absolute bottom-0 w-full">
 			<p className="text-white">Made with:</p>
 			<p className="text-white">
 				React <a href="https://www.npmjs.com/package/react-async-hook" className="underline decoration-1 underline-offset-4">useAsync</a>
@@ -13,7 +13,7 @@ function Footer() {
 			<p className="text-white">
 				<a href="https://www.npmjs.com/package/@giphy/js-fetch-api#pagination-options" className="underline decoration-1 underline-offset-4">Giphy API</a>
 			</p>
-		</div>
+		</footer>
 	)
 }
 
