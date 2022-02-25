@@ -21,7 +21,7 @@ function App() {
 
 
 	useAsync(async (offset) => {
-		const { data } = await giphyFetch.trending({ offset })
+		const { data } = await giphyFetch.trending({ offset, sort: 'relevant' })
 		setGifs(data)
 	}, [])
 
@@ -29,7 +29,7 @@ function App() {
 		event.preventDefault();
 		if (search.length > 0) {
 			setIsLoading(true)
-			const { data } = await giphyFetch.search(search, { offset, sort: 'relevant', limit: 30, type: 'stickers' })
+			const { data } = await giphyFetch.search(search, { offset, sort: 'relevant', limit: 30 })
 			setGifs(data)
 			setIsLoading(false)
 		}
