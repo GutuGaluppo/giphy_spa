@@ -32,6 +32,7 @@ function App() {
 			const { data } = await giphyFetch.search(search, { offset, sort: 'relevant', limit: 30 })
 			setGifs(data)
 			setIsLoading(false)
+			setSearch('')
 		}
 	}
 
